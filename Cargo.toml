@@ -1,0 +1,10 @@
+[package]
+authors = ["Denbeigh Stevens <denbeigh@denbeighstevens.com>"]
+edition = "2018"
+name = "slack-http-verifier"
+version = "0.1.0"
+[dependencies]
+crypto-mac = "0.7"
+hmac = "0.7"
+http = "0.2"
+sha2 = "0.8"
