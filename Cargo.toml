@@ -1,6 +1,11 @@
 [package]
+description = "Verifies HTTP request signatures from Slack"
 authors = ["Denbeigh Stevens <denbeigh@denbeighstevens.com>"]
 edition = "2018"
+homepage = "https://github.com/denbeigh2000/slack-http-verifier"
+documentation = "https://docs.rs/slack-http-verifier"
+repository = "https://github.com/denbeigh2000/slack-http-verifier"
+license = "MIT"
 name = "slack-http-verifier"
 version = "0.1.0"
 [dependencies]

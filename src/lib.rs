@@ -1,3 +1,7 @@
+//! slack_http_verifier verifies request signatures from Slacks HTTP Events API,
+//! as described
+//! [here](https://api.slack.com/docs/verifying-requests-from-slack#sdk_support).
+
 use crypto_mac::Mac;
 use hmac::Hmac;
 use sha2::Sha256;
