@@ -6,47 +6,47 @@
 //!
 //! If you're using the `http` crate, requests can be verified directly
 //! ```edition2018
-//! # use slack_http_verifier::SlackHTTPVerifier;
+//! use slack_http_verifier::SlackHTTPVerifier;
 //!
-//! # // Samples from Slack's documentation page
-//! # let my_secret_key: &str = "8f742231b10e8888abcd99yyyzzz85a5";
-//! # let slack_sample_timestamp: &str = "1531420618";
-//! # let slack_sample_body: &str =
-//! #     "token=xyzz0WbapA4vBCDEFasx0q6G&team_id=T1DC2JH3J&team_domain=testteamnow&channel_id=G8PSS9T3V&channel_name=foobar&user_id=U2CERLKJA&user_name=roadrunner&command=%2Fwebhook-collect&text=&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT1DC2JH3J%2F397700885554%2F96rGlfmibIGlgcZRskXaIFfN&trigger_id=398738663015.47445629121.803a0bc887a14d10d2c447fce8b6703c";
-//! # let slack_sample_sig: &str =
-//! #     "v0=a2114d57b48eac39b9ad189dd8316235a7b4a8d21a10bd27519666489c69b503";
+//! // Sample from Slack's documentation page - do not use this in your own code
+//! let my_secret_key: &str = "8f742231b10e8888abcd99yyyzzz85a5";
+//! let slack_sample_timestamp: &str = "1531420618";
+//! let slack_sample_body: &str =
+//!     "token=xyzz0WbapA4vBCDEFasx0q6G&team_id=T1DC2JH3J&team_domain=testteamnow&channel_id=G8PSS9T3V&channel_name=foobar&user_id=U2CERLKJA&user_name=roadrunner&command=%2Fwebhook-collect&text=&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT1DC2JH3J%2F397700885554%2F96rGlfmibIGlgcZRskXaIFfN&trigger_id=398738663015.47445629121.803a0bc887a14d10d2c447fce8b6703c";
+//! let slack_sample_sig: &str =
+//!     "v0=a2114d57b48eac39b9ad189dd8316235a7b4a8d21a10bd27519666489c69b503";
 //!
 //! let http_verifier = SlackHTTPVerifier::new(my_secret_key).unwrap();
 //!
 //! // ...
 //! // Receive requests
 //!
-//! # let req = http::Request::builder()
-//! #     .header("X-Slack-Request-Timestamp", slack_sample_timestamp)
-//! #     .header("X-Slack-Signature", slack_sample_sig)
-//! #     .body(slack_sample_body)
-//! #     .unwrap();
+//! let req = http::Request::builder()
+//!     .header("X-Slack-Request-Timestamp", slack_sample_timestamp)
+//!     .header("X-Slack-Signature", slack_sample_sig)
+//!     .body(slack_sample_body)
+//!     .unwrap();
 //!
 //! http_verifier.verify(&req).unwrap();
 //! ```
 //!
-//!
+//! They can also be verified using the raw body directly, encoded as a string.
 //! ```edition2018
 //! # use slack_http_verifier::SlackVerifier;
 //!
-//! # // Samples from Slack's documentation page
-//! # let my_secret_key: &str = "8f742231b10e8888abcd99yyyzzz85a5";
+//! // Sample from Slack's documentation page - do not use this in your own code
+//! let my_secret_key: &str = "8f742231b10e8888abcd99yyyzzz85a5";
 //!
 //! let verifier = SlackVerifier::new(my_secret_key).unwrap();
 //!
 //! // ...
 //! // Receive requests, extract from your framework
 //!
-//! # let slack_sample_timestamp: &str = "1531420618";
-//! # let slack_sample_body: &str =
-//! #     "token=xyzz0WbapA4vBCDEFasx0q6G&team_id=T1DC2JH3J&team_domain=testteamnow&channel_id=G8PSS9T3V&channel_name=foobar&user_id=U2CERLKJA&user_name=roadrunner&command=%2Fwebhook-collect&text=&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT1DC2JH3J%2F397700885554%2F96rGlfmibIGlgcZRskXaIFfN&trigger_id=398738663015.47445629121.803a0bc887a14d10d2c447fce8b6703c";
-//! # let slack_sample_sig: &str =
-//! #     "v0=a2114d57b48eac39b9ad189dd8316235a7b4a8d21a10bd27519666489c69b503";
+//! let slack_sample_timestamp: &str = "1531420618";
+//! let slack_sample_body: &str =
+//!     "token=xyzz0WbapA4vBCDEFasx0q6G&team_id=T1DC2JH3J&team_domain=testteamnow&channel_id=G8PSS9T3V&channel_name=foobar&user_id=U2CERLKJA&user_name=roadrunner&command=%2Fwebhook-collect&text=&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT1DC2JH3J%2F397700885554%2F96rGlfmibIGlgcZRskXaIFfN&trigger_id=398738663015.47445629121.803a0bc887a14d10d2c447fce8b6703c";
+//! let slack_sample_sig: &str =
+//!     "v0=a2114d57b48eac39b9ad189dd8316235a7b4a8d21a10bd27519666489c69b503";
 //!
 //! verifier
 //!     .verify(slack_sample_timestamp, slack_sample_body, slack_sample_sig)
