@@ -13,4 +13,5 @@ crypto-mac = "0.7"
 hex = "0.4"
 hmac = "0.7"
 http = "0.2"
+reqwest = {version = "0.10", features = ["blocking"]}
 sha2 = "0.8"
