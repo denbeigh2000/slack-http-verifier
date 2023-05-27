@@ -57,8 +57,7 @@
 
 use std::str;
 
-use crypto_mac::Mac;
-use hmac::Hmac;
+use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
 const SLACK_TIMESTAMP_HEADER: &str = "X-Slack-Request-Timestamp";
@@ -202,7 +201,7 @@ impl SlackVerifier {
     /// let verifier = SlackVerifier::new("8f742231b10e8888abcd99yyyzzz85a5").unwrap();
     /// ```
     pub fn new<S: AsRef<[u8]>>(secret: S) -> Result<SlackVerifier, InvalidKeyLengthError> {
-        match Sha256Hmac::new_varkey(secret.as_ref()) {
+        match Sha256Hmac::new_from_slice(secret.as_ref()) {
             Ok(mac) => Ok(SlackVerifier { mac }),
             Err(_) => Err(InvalidKeyLengthError),
         }
@@ -220,15 +219,15 @@ impl SlackVerifier {
     /// assert!(verifier.verify(ts_header, req_body, sig_header).is_ok());
     /// ```
     pub fn verify(&self, ts: &str, body: &str, exp_sig: &str) -> Result<(), VerificationError> {
-        let basestring = format!("v0:{}:{}", ts, body);
-        let mut mac = self.mac.clone();
+        let exp_sig_hex = exp_sig.strip_prefix("v0=").unwrap_or(exp_sig);
+        let exp_sig_bytes =
+            hex::decode(exp_sig_hex).map_err(|_| VerificationError::SignatureMismatch)?;
 
-        mac.input(basestring.as_bytes());
-        let sig = format!("v0={}", hex::encode(mac.result().code().as_slice()));
-        match sig == exp_sig {
-            true => Ok(()),
-            false => Err(VerificationError::SignatureMismatch),
-        }
+        self.mac
+            .clone()
+            .chain_update(format!("v0:{}:{}", ts, body).as_bytes())
+            .verify_slice(&exp_sig_bytes)
+            .map_err(|_| VerificationError::SignatureMismatch)
     }
 }
 
@@ -262,7 +261,8 @@ mod tests {
         let verifier = SlackHTTPVerifier::new(SLACK_SAMPLE_KEY).unwrap();
 
         let client = Client::new();
-        let req = client.post( "http://localhost:65535")
+        let req = client
+            .post("http://localhost:65535")
             .header(SLACK_TIMESTAMP_HEADER, SLACK_SAMPLE_TIMESTAMP)
             .header(SLACK_SIGNATURE_HEADER, SLACK_SAMPLE_SIG)
             .body(SLACK_SAMPLE_BODY)
